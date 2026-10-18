@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>메인 | 햄스터와 로봇 축구</title>
+<meta name="description" content="햄스터와 로봇 축구 행사 안내 사이트">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<nav class="nav" aria-label="주요 메뉴">
+  <a class="brand" href="/main">🐹 햄스터와 로봇 축구 ⚽🤖</a>
+  <a class="tab" href="/main" aria-current="page">메인</a>
+  <a class="tab" href="/ai" >AI 질문</a>
+  <a class="tab" href="/information" >행사 안내</a>
+  <a class="tab" href="/etc" >기타</a>
+</nav>
+<header class="hero">
+  <div class="wrap">
+    <h1>햄스터와 로봇 축구</h1>
+    <p>햄스터는 공이 되고, 로봇은 선수가 됩니다. 함께 경기장에서 만나요!</p>
+  </div>
+  <div class="ball" aria-hidden="true">🐹</div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>행사 한눈에 보기</h2>
+    <!-- TODO: 실제 정보로 바꿔 주세요 -->
+    <dl class="facts">
+      <div><dt>날짜</dt><dd>○월 ○일 (○)</dd></div>
+      <div><dt>장소</dt><dd>○○ 체육관</dd></div>
+      <div><dt>대상</dt><dd>누구나 (사전조사 후 확정)</dd></div>
+    </dl>
+    <p class="lead" style="margin-top:20px">자세한 프로그램은 <a href="/information">행사 안내</a>에서, 궁금한 점은 <a href="/ai">AI 질문</a>에서 바로 물어볼 수 있어요.</p>
+  </section>
+
+  <section id="survey">
+    <h2>참여 사전조사</h2>
+    <p class="lead">준비 인원을 정하려고 해요. 1분이면 끝나요.</p>
+    <form class="card" id="surveyForm">
+      <label for="name">이름 또는 별명 (선택)</label>
+      <input type="text" id="name" maxlength="30" autocomplete="off">
+
+      <label id="choiceLabel">행사에 참여하시나요?</label>
+      <div class="choices" role="radiogroup" aria-labelledby="choiceLabel">
+        <label><input type="radio" name="choice" value="yes" required> 참여할게요</label>
+        <label><input type="radio" name="choice" value="maybe"> 아직 고민 중이에요</label>
+        <label><input type="radio" name="choice" value="no"> 이번엔 어려워요</label>
+      </div>
+
+      <label for="comment">하고 싶은 말 (선택)</label>
+      <textarea id="comment" maxlength="300"></textarea>
+
+      <button class="btn" type="submit" id="sbtn">사전조사 제출</button>
+      <div class="msg" id="smsg" role="status" aria-live="polite"></div>
+    </form>
+
+    <div style="margin-top:28px">
+      <h3 style="margin:0">지금까지의 응답</h3>
+      <div class="tally" id="tally" aria-label="응답 현황"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const form = document.getElementById('surveyForm');
+const msg = document.getElementById('smsg');
+const btn = document.getElementById('sbtn');
+
+async function loadTally(){
+  try{
+    const r = await fetch('/api/survey');
+    const d = await r.json();
+    if(!r.ok) throw new Error();
+    const total = d.yes + d.maybe + d.no;
+    const tally = document.getElementById('tally');
+    const legend = document.getElementById('legend');
+    if(!total){ tally.style.display='none'; legend.textContent='아직 응답이 없어요. 첫 번째로 응답해 주세요!'; return; }
+    tally.style.display='flex';
+    tally.innerHTML = [['yes',d.yes],['maybe',d.maybe],['no',d.no]]
+      .filter(x=>x[1]>0)
+      .map(([k,v])=>`<span class="t-${k}" style="width:${v/total*100}%">${v}</span>`).join('');
+    legend.innerHTML = `<span>🟩 참여 ${d.yes}명</span><span>🟧 고민 중 ${d.maybe}명</span><span>⬜ 어려움 ${d.no}명</span>`;
+  }catch{ document.getElementById('legend').textContent='응답 현황을 불러오지 못했어요.'; }
+}
+
+form.addEventListener('submit', async e=>{
+  e.preventDefault();
+  if(localStorage.getItem('surveyDone')){ msg.className='msg err'; msg.textContent='이미 제출하셨어요. 응답해 주셔서 고맙습니다!'; return; }
+  btn.disabled = true; msg.className='msg'; msg.textContent='보내는 중…';
+  try{
+    const r = await fetch('/api/survey',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:form.name.value.trim(),choice:form.choice.value,comment:form.comment.value.trim()})});
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error||'제출에 실패했어요.');
+    localStorage.setItem('surveyDone','1');
+    msg.textContent='제출했어요. 응답해 주셔서 고맙습니다!';
+    form.reset(); loadTally();
+  }catch(err){ msg.className='msg err'; msg.textContent=err.message+' 잠시 뒤 다시 시도해 주세요.'; }
+  finally{ btn.disabled=false; }
+});
+loadTally();
+</script>
+<footer><div class="wrap">© 햄스터와 로봇 축구 · gyesoopc.kro.kr</div></footer>
+</body>
+</html>
