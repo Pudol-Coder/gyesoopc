@@ -21,7 +21,7 @@
 <header class="hero">
   <div class="wrap">
     <h1>햄스터와 로봇 축구</h1>
-    <p>햄스터는 공이 되고, 로봇은 선수가 됩니다. 함께 경기장에서 만나요!</p>
+    <p>햄스터 로봇과 함께하는 축구경기! 라고 쓰고 PC방이라고 읽는</p>
   </div>
   <div class="ball" aria-hidden="true">🐹</div>
 </header>
@@ -31,28 +31,28 @@
     <h2>행사 한눈에 보기</h2>
     <!-- TODO: 실제 정보로 바꿔 주세요 -->
     <dl class="facts">
-      <div><dt>날짜</dt><dd>○월 ○일 (○)</dd></div>
-      <div><dt>장소</dt><dd>○○ 체육관</dd></div>
-      <div><dt>대상</dt><dd>누구나 (사전조사 후 확정)</dd></div>
+      <div><dt>날짜</dt><dd>10월 23일 (금) 계수제 당일</dd></div>
+      <div><dt>장소</dt><dd>후관 1층 컴퓨터실</dd></div>
+      <div><dt>특징</dt><dd>햄스터로봇축구과 게임 플레이</dd></div>
     </dl>
-    <p class="lead" style="margin-top:20px">자세한 프로그램은 <a href="/information">행사 안내</a>에서, 궁금한 점은 <a href="/ai">AI 질문</a>에서 바로 물어볼 수 있어요.</p>
+    <p class="lead" style="margin-top:20px">자세한 프로그램은 <a href="/information">행사 안내</a>에서, 궁금한 점은 <a href="/ai">AI 질문 (개발 중)</a>에서 바로 물어볼 수 있어요.</p>
   </section>
 
   <section id="survey">
-    <h2>참여 사전조사</h2>
-    <p class="lead">준비 인원을 정하려고 해요. 1분이면 끝나요.</p>
+    <h2>참여 사전조사 (개발 중)</h2>
+    <p class="lead">사실 님들 의견 물어보는 용도</p>
     <form class="card" id="surveyForm">
-      <label for="name">이름 또는 별명 (선택)</label>
+      <label for="name">학년</label>
       <input type="text" id="name" maxlength="30" autocomplete="off">
 
       <label id="choiceLabel">행사에 참여하시나요?</label>
       <div class="choices" role="radiogroup" aria-labelledby="choiceLabel">
-        <label><input type="radio" name="choice" value="yes" required> 참여할게요</label>
-        <label><input type="radio" name="choice" value="maybe"> 아직 고민 중이에요</label>
-        <label><input type="radio" name="choice" value="no"> 이번엔 어려워요</label>
+        <label><input type="radio" name="choice" value="yes" required> 무조건 참여할게요!</label>
+        <label><input type="radio" name="choice" value="maybe"> 가능하면 참여할게요</label>
+        <label><input type="radio" name="choice" value="no"> 어려울 것 같아요..</label>
       </div>
 
-      <label for="comment">하고 싶은 말 (선택)</label>
+      <label for="comment">하고 싶은 말 (선택) (예시: 발로란트도 추가해주실 거죠?)</label>
       <textarea id="comment" maxlength="300"></textarea>
 
       <button class="btn" type="submit" id="sbtn">사전조사 제출</button>
@@ -60,8 +60,8 @@
     </form>
 
     <div style="margin-top:28px">
-      <h3 style="margin:0">지금까지의 응답</h3>
-      <div class="tally" id="tally" aria-label="응답 현황"></div>
+      <h3 style="margin:0">지금까지의 선호도</h3>
+      <div class="tally" id="tally" aria-label="선호도 현황"></div>
       <div class="legend" id="legend"></div>
     </div>
   </section>
@@ -85,7 +85,7 @@ async function loadTally(){
     tally.innerHTML = [['yes',d.yes],['maybe',d.maybe],['no',d.no]]
       .filter(x=>x[1]>0)
       .map(([k,v])=>`<span class="t-${k}" style="width:${v/total*100}%">${v}</span>`).join('');
-    legend.innerHTML = `<span>🟩 참여 ${d.yes}명</span><span>🟧 고민 중 ${d.maybe}명</span><span>⬜ 어려움 ${d.no}명</span>`;
+    legend.innerHTML = `<span>🟩 무조건 참여 ${d.yes}명</span><span>🟧 가능하면 참여 ${d.maybe}명</span><span>⬜ 어려움 ${d.no}명</span>`;
   }catch{ document.getElementById('legend').textContent='응답 현황을 불러오지 못했어요.'; }
 }
 
