@@ -37,34 +37,6 @@
     </dl>
     <p class="lead" style="margin-top:20px">자세한 프로그램은 <a href="/information">행사 안내</a>에서, 궁금한 점은 <a href="/ai">AI 질문 (개발 중)</a>에서 바로 물어볼 수 있어요.</p>
   </section>
-
-  <section id="survey">
-    <h2>참여 사전조사 (개발 중)</h2>
-    <p class="lead">사실 님들 의견 물어보는 용도</p>
-    <form class="card" id="surveyForm">
-      <label for="name">학년</label>
-      <input type="text" id="name" maxlength="30" autocomplete="off">
-
-      <label id="choiceLabel">행사에 참여하시나요?</label>
-      <div class="choices" role="radiogroup" aria-labelledby="choiceLabel">
-        <label><input type="radio" name="choice" value="yes" required> 무조건 참여할게요!</label>
-        <label><input type="radio" name="choice" value="maybe"> 가능하면 참여할게요</label>
-        <label><input type="radio" name="choice" value="no"> 어려울 것 같아요..</label>
-      </div>
-
-      <label for="comment">하고 싶은 말 (선택) (예시: 발로란트도 추가해주실 거죠?)</label>
-      <textarea id="comment" maxlength="300"></textarea>
-
-      <button class="btn" type="submit" id="sbtn">사전조사 제출</button>
-      <div class="msg" id="smsg" role="status" aria-live="polite"></div>
-    </form>
-
-    <div style="margin-top:28px">
-      <h3 style="margin:0">지금까지의 선호도</h3>
-      <div class="tally" id="tally" aria-label="선호도 현황"></div>
-      <div class="legend" id="legend"></div>
-    </div>
-  </section>
 </main>
 
 <script>
